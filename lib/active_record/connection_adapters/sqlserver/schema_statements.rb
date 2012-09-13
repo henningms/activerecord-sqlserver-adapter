@@ -26,6 +26,21 @@ module ActiveRecord
           execute "CREATE #{index_type} INDEX #{quote_column_name(index_name)} ON #{quote_table_name(table_name)} (#{index_columns})"
         end
 
+        def index_name(table_name, options) #:nodoc:
+          table_name = table_name.gsub(/\./, '_')
+          if Hash === options # legacy support
+            if options[:column]
+              "index_#{table_name}_on_#{Array(options[:column]) * '_and_'}"
+            elsif options[:name]
+              options[:name]
+            else
+              raise ArgumentError, "You must specify the index name"
+            end
+          else
+            index_name(table_name, :column => options)
+          end
+        end
+
         def indexes(table_name, name = nil)
           data = select("EXEC sp_helpindex #{quote(table_name)}",name) rescue []
           data.inject([]) do |indexes,index|
