@@ -377,7 +377,7 @@ module ActiveRecord
           sql = "SET IDENTITY_INSERT #{table_name} #{enable ? 'ON' : 'OFF'}"
           do_execute sql, 'SCHEMA'
         rescue Exception => e
-          raise ActiveRecordError, "IDENTITY_INSERT could not be turned #{enable ? 'ON' : 'OFF'} for table #{table_name}"
+          raise ActiveRecordError, "IDENTITY_INSERT could not be turned #{enable ? 'ON' : 'OFF'} for table #{table_name}, #{e}"
         end
 
         def identity_column(table_name)
